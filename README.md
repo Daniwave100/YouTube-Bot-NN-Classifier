@@ -2,7 +2,7 @@
 
 ## 📌 About This Project
 
-This project trains a Neural Network (NN) Classifier using PyTorch and TF-IDF vectorization to analyze YouTube comments and determine whether they are malicious bot comments or human-written.
+This project trains a Neural Network (NN) Classifier using PyTorch and Term Frequency-Inverse Document Frequency (TF-IDF) vectorization to analyze YouTube comments and determine whether they are malicious bot comments or human-written.
 Read more about my project @ https://daniwave100.github.io/DanielPersonalPage/ !
 
 ## 🔍 Features
@@ -30,7 +30,7 @@ Read more about my project @ https://daniwave100.github.io/DanielPersonalPage/ !
 
  ## 📈 Future Improvements
 - ✅ Expand training dataset for improved accuracy (HIGH PRIORITY)
-- ✅ Implement LSTM or Transformer-based models for better performance
+- ✅ Implement transformer-based models for better performance
 - ✅ Deploy model with a Flask API for real-time predictions and user-friendly analysis
 
 ## ⚠️ Current Development Status

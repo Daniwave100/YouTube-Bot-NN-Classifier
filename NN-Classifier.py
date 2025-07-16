@@ -13,8 +13,9 @@ import torch.nn as nn
 from torch.nn import functional as F
 import torch.optim as optim
 from sklearn.model_selection import train_test_split
+import joblib
 
-dataset = pd.read_csv("TwoVideoPlaylistComments_.csv") # imports our training data set
+dataset = pd.read_csv("TwoVideoPlaylistComments__.csv") # imports our training data set
 print(dataset.info())
 
 # data cleaning portion ----------------------------------------------------------------
@@ -121,7 +122,19 @@ epochs = 100
 for epoch in range(epochs):
     optimizer.zero_grad()
     Y_pred = model(X_train)
-    loss = loss_fn(Y_pred, Y_train)
-    loss.backward()
-    optimizer.step()
+    loss = loss_fn(Y_pred, Y_train) # loss function which computes how different predictions are from actual label
+    loss.backward() # backward pass to optimize
+    optimizer.step() # optimizes the weights to minimize loss
     print("Epoch", epoch, "Loss:", loss.item())
+
+# so perhaps we can find a way to combine our text classifier with a DecisionTreeRegressor which would take
+# into account like count, reply count, etc.
+
+# Save the vectorizer
+joblib.dump(vectorizer, 'vectorizer.pkl')
+torch.save(model.state_dict(), 'model_weights.pth')
+# Save entire model
+torch.save(model, 'full_model.pt')
+
+
+

@@ -29,6 +29,7 @@ with tab2:
 
     # Creates our second Streamlit tab
     st.header("Batch Test: Upload CSV for Evaluation")
+    # if there is a file uploaded, read it into a dataframe
     test_file = st.file_uploader("Upload test CSV", type=["csv"])
     if test_file:
         df = pd.read_csv(test_file)
@@ -36,19 +37,23 @@ with tab2:
         X_tensor = torch.from_numpy(X).float()
         with torch.no_grad():
             outputs = model(X_tensor)
-            probs = torch.softmax(outputs, dim=1)[:, 1].numpy()
-            preds = torch.argmax(outputs, dim=1).numpy()
-        y_true = df['boolean'].values
-
+            probs = torch.softmax(outputs, dim=1)[:, 1].numpy() # Probability of being class 1 (Bot)
+            preds = torch.argmax(outputs, dim=1).numpy() # Predicted class label (human (1) or bot (0))
+        
+        # Pulls the ground truth values from csv to confirm prediction vs. actual
+        y_true = df['boolean'].values 
         cm = confusion_matrix(y_true, preds)
+        labels = ["Human", "Bot"]
         st.subheader("Confusion Matrix")
         fig, ax = plt.subplots()
-        sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", ax=ax)
+        sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", ax=ax, xticklabels=labels, yticklabels=labels)
+        ax.set_xlabel("Predicted")
+        ax.set_ylabel("Actual")
         st.pyplot(fig)
 
         fpr, tpr, _ = roc_curve(y_true, probs)
         roc_auc = auc(fpr, tpr)
-        st.subheader("ROC Curve")
+        st.subheader("Receiver Operating Characteristic (ROC Curve)")
         fig2, ax2 = plt.subplots()
         ax2.plot(fpr, tpr, label=f'AUC = {roc_auc:.2f}')
         ax2.plot([0, 1], [0, 1], 'k--')

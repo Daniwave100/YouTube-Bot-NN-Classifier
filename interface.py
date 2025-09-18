@@ -31,6 +31,7 @@ with tab2:
     st.header("Batch Test: Upload CSV for Evaluation")
     # if there is a file uploaded, read it into a dataframe
     test_file = st.file_uploader("Upload test CSV", type=["csv"])
+
     if test_file:
         df = pd.read_csv(test_file)
         X = vectorizer.transform(df['text'].astype(str)).toarray()
@@ -39,10 +40,18 @@ with tab2:
             outputs = model(X_tensor)
             probs = torch.softmax(outputs, dim=1)[:, 1].numpy() # Probability of being class 1 (Bot)
             preds = torch.argmax(outputs, dim=1).numpy() # Predicted class label (human (1) or bot (0))
-        
+    
         # Pulls the ground truth values from csv to confirm prediction vs. actual
         y_true = df['boolean'].values 
+        # creates our confusion matrix with each of the values
         cm = confusion_matrix(y_true, preds)
+        
+        # Gets sensitivity (True positive) and specificity (True Negative)
+        sensitivity = cm[1, 1] / (cm[1, 0] + cm[1, 1]) if (cm[1, 0] + cm[1, 1]) > 0 else 0
+        specificity = cm[0, 0] / (cm[0, 0] + cm[0, 1]) if (cm[0, 0] + cm[0, 1]) > 0 else 0
+        st.write(f"Sensitivity (Percentage of guessing human correctly): {sensitivity:.2f}")
+        st.write(f"Specificity (Percentage of guessing bot correctly): {specificity:.2f}")
+
         labels = ["Human", "Bot"]
         st.subheader("Confusion Matrix")
         fig, ax = plt.subplots()
@@ -50,6 +59,7 @@ with tab2:
         ax.set_xlabel("Predicted")
         ax.set_ylabel("Actual")
         st.pyplot(fig)
+
 
         fpr, tpr, _ = roc_curve(y_true, probs)
         roc_auc = auc(fpr, tpr)

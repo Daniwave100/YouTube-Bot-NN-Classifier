@@ -6,9 +6,19 @@ from sklearn.metrics import roc_curve, auc, confusion_matrix
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-vectorizer = joblib.load('vectorizer.pkl')
-model = torch.load('full_model.pt', weights_only=False)
-model.eval()
+# Point to your files inside the artifacts folder
+VECTORIZER_FILE = "artifacts/vectorizer.pkl"
+MODEL_FILE = "artifacts/full_model.pt"
+
+# Load them once (cached so Streamlit doesn't reload on every run)
+@st.cache_resource
+def load_artifacts():
+    vectorizer = joblib.load(VECTORIZER_FILE)
+    model = torch.load(MODEL_FILE, map_location="cpu")
+    model.eval()
+    return vectorizer, model
+
+vectorizer, model = load_artifacts()
 
 tab1, tab2 = st.tabs(["Single Prediction", "Batch Test"])
 

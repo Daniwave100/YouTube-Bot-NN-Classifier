@@ -43,6 +43,7 @@ setuptools==80.9.0
 six==1.17.0
 stack-data==0.6.3
 sympy==1.14.0
+seaborn
 threadpoolctl==3.6.0
 torch==2.8.0
 tornado==6.5.2
@@ -51,3 +52,11 @@ traitlets==5.14.3
 typing_extensions==4.15.0
 tzdata==2025.2
 wcwidth==0.2.13
+streamlit==1.37.0
+joblib
+scikit-learn
+pandas
+numpy
+matplotlib
+seaborn
+torch

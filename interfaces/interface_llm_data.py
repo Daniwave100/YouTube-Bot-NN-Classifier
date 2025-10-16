@@ -46,14 +46,14 @@ with tab2:
         with torch.no_grad():
             outputs = model(X_tensor)
             probs = torch.softmax(outputs, dim=1)[:, 1].numpy() # Probability of being class 1 (Bot)
-            preds = torch.argmax(outputs, dim=1).numpy() # Predicted class label (human (1) or bot (0))
+            preds = torch.argmax(outputs, dim=1).numpy() # Predicted class label (human (0) or bot (1))
     
         # Pulls the ground truth values from csv to confirm prediction vs. actual
         y_true = df[boolean].values 
         # creates our confusion matrix with each of the values
         cm = confusion_matrix(y_true, preds)
         
-        # Gets sensitivity (True positive) and specificity (True Negative)
+        # Gets sensitivity (bot detection rate) and specificity (human detection rate)
         sensitivity = cm[1, 1] / (cm[1, 0] + cm[1, 1]) if (cm[1, 0] + cm[1, 1]) > 0 else 0
         specificity = cm[0, 0] / (cm[0, 0] + cm[0, 1]) if (cm[0, 0] + cm[0, 1]) > 0 else 0
         st.write(f"Sensitivity (Percentage of guessing human correctly): {sensitivity:.2f}")
